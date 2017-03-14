@@ -1,2 +1,2 @@
 # testeigen
-testing of a Eigen3 library
+various testing of an Eigen3 library
