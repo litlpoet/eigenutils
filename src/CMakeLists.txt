@@ -1,17 +1,22 @@
-# Top level CMakeLists
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
-project(testeigen VERSION 0.0.1 LANGUAGES CXX)
+# eigenutils
+add_library(${PROJECT_NAME} INTERFACE)
 
-include(GNUInstallDirs)
+target_include_directories(
+  ${PROJECT_NAME}
+  INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  )
 
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# install(
+#   TARGETS eigenutils EXPORT EigenUtilsConfig
+#   ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#   LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#   RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}  # This is for Windows
+#   )
 
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-find_package(GTest REQUIRED)
+# install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-enable_testing()
+# install(EXPORT EigenUtilsConfig DESTINATION share/EigenUtilsConfig/cmake)
 
-add_subdirectory(libeigenutils)
+# export(TARGETS eigenutils EigenUtilsConfig.cmake)
