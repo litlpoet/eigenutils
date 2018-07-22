@@ -5,5 +5,7 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
-build/
 compile_commands.json
+
+build/
+.cquery_cached_index/
