@@ -53,11 +53,17 @@ TEST_CASE("Sparse matrix IO", "[CoreSparseMatrix]")
 
   eigenutils::core::SpMat sparse_mat(4, 5);
   sparse_mat.setFromTriplets(triplets.cbegin(), triplets.cend());
+  std::cout << "Sparse mat (input):\n" << sparse_mat << std::endl;
 
   eigenutils::io::WriteSparseMatrix(sparse_mat);
 
   eigenutils::core::SpMat sparse_mat_new;
   eigenutils::io::ReadSparseMatrix(sparse_mat_new);
+  std::cout << "Sparse mat (output):\n" << sparse_mat_new << std::endl;
 
-  REQUIRE(eigenutils::core::MatX(sparse_mat) == eigenutils::core::MatX(sparse_mat_new));
+  auto MatA = eigenutils::core::MatX(sparse_mat);
+  auto MatB = eigenutils::core::MatX(sparse_mat_new);
+  std::cout << "Dense mat (input) :\n" << MatA << std::endl;
+  std::cout << "Dense mat (output):\n" << MatB << std::endl;
+  REQUIRE(MatA.cwiseEqual(MatB).count() == (4 * 5));
 }
