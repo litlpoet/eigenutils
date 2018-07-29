@@ -1,6 +1,9 @@
 #include <catch2/catch.hpp>
 
+#include <fstream>
 #include <iostream>
+#include <istream>
+#include <ostream>
 #include <vector>
 
 #include <eigenutils/core/matrix.hpp>
@@ -55,11 +58,23 @@ TEST_CASE("Sparse matrix IO", "[CoreSparseMatrix]")
   sparse_mat.setFromTriplets(triplets.cbegin(), triplets.cend());
   std::cout << "Sparse mat (input):\n" << sparse_mat << std::endl;
 
-  eigenutils::io::WriteSparseMatrix(sparse_mat);
+  constexpr auto const file_name = "sparse_mat.bin";
+  std::ofstream        out_file(file_name, std::ios::out | std::ios::binary);
+  REQUIRE(out_file.is_open());
+  if (out_file.is_open())
+  {
+    eigenutils::io::WriteSparseMatrix(out_file, sparse_mat);
+    out_file.close();
+  }
 
   eigenutils::core::SpMat sparse_mat_new;
-  eigenutils::io::ReadSparseMatrix(sparse_mat_new);
-  std::cout << "Sparse mat (output):\n" << sparse_mat_new << std::endl;
+  std::ifstream           in_file(file_name, std::ios::in | std::ios::binary);
+  REQUIRE(in_file.is_open());
+  if (in_file.is_open())
+  {
+    eigenutils::io::ReadSparseMatrix(in_file, sparse_mat_new);
+    std::cout << "Sparse mat (output):\n" << sparse_mat_new << std::endl;
+  }
 
   auto MatA = eigenutils::core::MatX(sparse_mat);
   auto MatB = eigenutils::core::MatX(sparse_mat_new);
