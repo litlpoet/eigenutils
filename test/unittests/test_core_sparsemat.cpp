@@ -118,4 +118,42 @@ TEST_CASE("SparseMat Map", "[CoreSparseMatrix]")
   for (auto const& d : data2)
     std::cout << d << ", ";
   std::cout << std::endl;
+
+  data_mat.block(0, 0, 1, 5)  = sparse_mat.innerVector(3);
+  data2_mat.block(0, 0, 1, 5) = sparse_mat.innerVector(3);
+  std::cout << "sparse_mat: " << std::endl << sparse_mat << std::endl;
+  std::cout << "data_mat : " << std::endl << data_mat << std::endl;
+  std::cout << "data_mat2: " << std::endl << data2_mat << std::endl;
+  std::cout << "vector list: ";
+  for (auto const& d : data)
+    std::cout << d << ", ";
+  std::cout << std::endl;
+  std::cout << "vector list2: ";
+  for (auto const& d : data2)
+    std::cout << d << ", ";
+  std::cout << std::endl;
+}
+
+TEST_CASE("SparseMat Block", "[CoreSparseMatrix]")
+{
+  std::vector<eigenutils::core::SpTrp> triplets;
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 0, 1));
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 2, 3));
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 3, 4));
+  triplets.emplace_back(eigenutils::core::SpTrp(1, 3, 2));
+  triplets.emplace_back(eigenutils::core::SpTrp(2, 2, -1));
+  triplets.emplace_back(eigenutils::core::SpTrp(2, 3, 3));
+  triplets.emplace_back(eigenutils::core::SpTrp(3, 0, -2));
+  triplets.emplace_back(eigenutils::core::SpTrp(3, 4, 7));
+
+  eigenutils::core::SpMatRM sparse_mat(4, 5);
+  sparse_mat.setFromTriplets(triplets.cbegin(), triplets.cend());
+  std::cout << "sparse mat: " << std::endl << sparse_mat << std::endl;
+  eigenutils::core::SpMatRM sparse_block = sparse_mat.block(1, 1, 3, 3);
+  std::cout << "sparse block: " << std::endl << sparse_block << std::endl;
+
+  eigenutils::core::SpVecRM sparse_vec = sparse_mat.innerVector(0);
+  std::cout << "sparse vec: " << std::endl << sparse_vec << std::endl;
+  eigenutils::core::RVecX dense_vec = sparse_mat.innerVector(0);
+  std::cout << "dense vec: " << std::endl << dense_vec << std::endl;
 }
