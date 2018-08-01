@@ -45,7 +45,7 @@ TEST_CASE("Initialization", "[CoreSparseMatrix]")
 TEST_CASE("Sparse matrix IO", "[CoreSparseMatrix]")
 {
   std::vector<eigenutils::core::SpTrp> triplets;
-  triplets.emplace_back(eigenutils::core::SpTrp(0, 0, 1));
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 0, 0));
   triplets.emplace_back(eigenutils::core::SpTrp(0, 2, 3));
   triplets.emplace_back(eigenutils::core::SpTrp(0, 3, 4));
   triplets.emplace_back(eigenutils::core::SpTrp(1, 3, 2));
@@ -156,4 +156,27 @@ TEST_CASE("SparseMat Block", "[CoreSparseMatrix]")
   std::cout << "sparse vec: " << std::endl << sparse_vec << std::endl;
   eigenutils::core::RVecX dense_vec = sparse_mat.innerVector(0);
   std::cout << "dense vec: " << std::endl << dense_vec << std::endl;
+}
+
+TEST_CASE("Triplets", "[CoreSparseMatrix]")
+{
+  std::vector<eigenutils::core::SpTrp> triplets;
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 0, 0));
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 2, 1e-16));
+  triplets.emplace_back(eigenutils::core::SpTrp(1, 1, -1e-18));
+  triplets.emplace_back(eigenutils::core::SpTrp(0, 3, 4));
+  triplets.emplace_back(eigenutils::core::SpTrp(1, 3, 2));
+  triplets.emplace_back(eigenutils::core::SpTrp(2, 2, -1));
+  triplets.emplace_back(eigenutils::core::SpTrp(2, 3, 3));
+  triplets.emplace_back(eigenutils::core::SpTrp(3, 0, -2));
+  triplets.emplace_back(eigenutils::core::SpTrp(3, 4, 7));
+
+  eigenutils::core::SpMatRM sparse_mat(4, 5);
+  sparse_mat.setFromTriplets(triplets.begin(), triplets.end());
+  // sparse_mat.prune(1e-5, 1.0);
+  std::cout << "dummy precision: " << Eigen::NumTraits<double>::dummy_precision() << std::endl;
+  std::cout << "sparse mat: " << std::endl << sparse_mat << std::endl;
+
+  REQUIRE(sparse_mat.isCompressed() == true);
+  REQUIRE(sparse_mat.nonZeros() == 9);
 }
